@@ -2,7 +2,7 @@
 scraper_listing.py
 ==================
 Scrapes Amazon India search result pages for any query.
-Outputs: amazon_listing_<query>.json
+Outputs: ../data/amazon_listing_<query>.json
 
 Usage:
     python scraper_listing.py
@@ -191,7 +191,7 @@ async def scrape_listing(
 ) -> list[dict]:
 
     safe_query    = re.sub(r'[^\w]', '_', query)
-    out_file      = out_file or Path(f"amazon_listing_{safe_query}.json")
+    out_file      = out_file or Path(f"../data/amazon_listing_{safe_query}.json")
     progress_file = out_file.with_suffix(".pages.json")  # tracks done page numbers
 
     # ── Resume: load existing data ────────────────────────────────────────

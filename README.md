@@ -68,8 +68,10 @@ cd scraper
 python scraper_listing.py --query "smartphones" --pages 3
 
 # Scrape product details for each listing
-python scraper_product.py --input amazon_listing_smartphones.json --limit 50
+python scraper_product.py --input ../data/amazon_listing_smartphones.json --limit 50
 ```
+
+**Output**: JSON files saved to `../data/` folder
 
 **Resume Logic**: Both scrapers support automatic resume — if interrupted, just re-run and they'll skip already-scraped items.
 
@@ -113,9 +115,9 @@ streamlit run streamlit_app.py
 ```
 Search Query
     ↓
-scraper_listing.py → amazon_listing_*.json (57 listings)
+scraper_listing.py → ../data/amazon_listing_*.json (57 listings)
     ↓
-scraper_product.py → amazon_products_*.json (10 full details)
+scraper_product.py → ../data/amazon_products_*.json (10 full details)
     ↓
 pipeline.py → Merge, clean, extract features, engineer metrics
     ↓
@@ -138,25 +140,25 @@ powerbi_prep.py ──→ pbi_products_*.csv (PowerBI)
 ### Scraper: Listings
 
 ```bash
-python scraper_listing.py --query "laptops" --pages 5 --output my_laptops.json
+python scraper_listing.py --query "laptops" --pages 5 --output ../data/my_laptops.json
 ```
 
 | Argument  | Default | Description |
 |-----------|---------|-------------|
 | `--query` | "phone" | Search query for Amazon |
 | `--pages` | 3 | Number of pages to scrape |
-| `--output` | auto | Output filename |
+| `--output` | auto (../data/amazon_listing_*.json) | Output filename |
 | `--headless` | True | Run browser headless |
 
 ### Scraper: Products
 
 ```bash
-python scraper_product.py --input amazon_listing_laptops.json --limit 50
+python scraper_product.py --input ../data/amazon_listing_laptops.json --limit 50
 ```
 
 | Argument | Default | Description |
 |----------|---------|-------------|
-| `--input` | - | Input listing JSON file |
+| `--input` | - | Input listing JSON file path |
 | `--limit` | None | Max products to scrape |
 | `--url` | - | Scrape single URL directly |
 | `--headless` | True | Run browser headless |
@@ -164,13 +166,13 @@ python scraper_product.py --input amazon_listing_laptops.json --limit 50
 ### Pipeline
 
 ```bash
-python pipeline.py --query "smartphones" --data_dir ../scraper --out_dir ../data/processed
+python pipeline.py --query "smartphones" --data_dir ../data --out_dir ../data/processed
 ```
 
 | Argument | Default | Description |
 |----------|---------|-------------|
 | `--query` | - | Product query (e.g., "laptops") |
-| `--data_dir` | ../scraper | Folder with scraped JSONs |
+| `--data_dir` | ../data | Folder with scraped JSONs |
 | `--out_dir` | ../data/processed | Output folder for CSVs |
 
 ### PowerBI Prep
@@ -272,8 +274,8 @@ availability         : In stock/Out of stock/etc.
 
 ### AI Insights
 - Ask questions about the data in natural language
-- Claude API analyzes data and provides market insights
-- Requires `ANTHROPIC_API_KEY` environment variable
+- Google Gemini API analyzes data and provides market insights
+- Requires `GOOGLE_API_KEY` environment variable (get free key at https://aistudio.google.com/app/apikey)
 
 ### Filters (Optional)
 - **Brand** — Single or multiple selection
@@ -284,17 +286,19 @@ availability         : In stock/Out of stock/etc.
 
 ## 🔑 Environment Variables
 
-### For AI Insights (Optional)
+### For AI Insights (Required)
 
 ```bash
-# Set your Anthropic API key
-set ANTHROPIC_API_KEY=sk-ant-...
+# Set your Google Gemini API key
+set GOOGLE_API_KEY=sk-...
 ```
 
 Or add to `.env` file:
 ```
-ANTHROPIC_API_KEY=sk-ant-...
+GOOGLE_API_KEY=sk-...
 ```
+
+Get your free API key at: https://aistudio.google.com/app/apikey
 
 ---
 
@@ -308,7 +312,7 @@ cd scraper
 python scraper_listing.py --query "gaming laptops" --pages 5
 
 # 2. Scrape product details
-python scraper_product.py --input amazon_listing_gaming_laptops.json
+python scraper_product.py --input ../data/amazon_listing_gaming_laptops.json
 
 # 3. Process data
 cd ../processing
@@ -376,6 +380,8 @@ cd app && streamlit run streamlit_app.py
 # Ensure you're in scraper/ directory
 cd scraper
 python scraper_listing.py --query "your-query"
+
+# Output will be saved to ../data/amazon_listing_your_query.json
 ```
 
 ---
@@ -449,13 +455,13 @@ pip install pandas crawl4ai streamlit plotly anthropic beautifulsoup4
 
 Both scrapers support automatic resume:
 
-- **Listings**: Tracks pages in `amazon_listing_*.pages.json`
-- **Products**: Skips already-scraped ASINs based on output JSON
+- **Listings**: Tracks pages in `../data/amazon_listing_*.pages.json`
+- **Products**: Skips already-scraped ASINs based on output JSON in `../data/`
 
 If stopped/crashed:
 ```bash
 # Just re-run — it picks up where it left off
-python scraper_product.py --input amazon_listing_smartphones.json
+python scraper_product.py --input ../data/amazon_listing_smartphones.json
 ```
 
 ---

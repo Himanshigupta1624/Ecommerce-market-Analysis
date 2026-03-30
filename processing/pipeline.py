@@ -445,7 +445,7 @@ def run_pipeline(query: str, data_dir: str = "../scraper", out_dir: str = "../da
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Dynamic Amazon product pipeline")
     parser.add_argument("--query",    required=True, help="Product query (e.g. 'laptops')")
-    parser.add_argument("--data_dir", default="../scraper",          help="Folder with scraped JSONs")
+    parser.add_argument("--data_dir", default="../data",             help="Folder with scraped JSONs")
     parser.add_argument("--out_dir",  default="../data/processed",   help="Output folder")
     args = parser.parse_args()
 

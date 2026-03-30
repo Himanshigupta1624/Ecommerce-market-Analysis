@@ -8,20 +8,20 @@ RESUME LOGIC: Already-scraped ASINs are skipped automatically.
 New results are appended to the output file after every item —
 so if the script crashes, you lose nothing and can just re-run.
 
-Outputs: amazon_products_<query>.json
+Outputs: ../data/amazon_products_<query>.json
 
 Usage:
     # Scrape all products from a listing file
-    python scraper_product.py --input amazon_listing_laptops.json
+    python scraper_product.py --input ../data/amazon_listing_laptops.json
 
     # Scrape with a limit (e.g. first 50)
-    python scraper_product.py --input amazon_listing_laptops.json --limit 50
+    python scraper_product.py --input ../data/amazon_listing_laptops.json --limit 50
 
     # Scrape a single URL directly
     python scraper_product.py --url "https://www.amazon.in/dp/B0CRKXDX83"
 
     # Re-run anytime — already scraped items are skipped instantly
-    python scraper_product.py --input amazon_listing_laptops.json --limit 50
+    python scraper_product.py --input ../data/amazon_listing_laptops.json --limit 50
 """
 
 import asyncio
@@ -559,7 +559,7 @@ async def main():
     # ── Build URL list ────────────────────────────────────────────────────
     if args.url:
         urls     = [args.url]
-        out_stem = "amazon_product_single"
+        out_stem = "../data/amazon_product_single"
     else:
         listing_path = Path(args.input)
         if not listing_path.exists():
@@ -578,7 +578,7 @@ async def main():
                 urls.append(url)
 
         urls     = urls[:args.limit]
-        out_stem = "amazon_products_" + re.sub(r'[^\w]', '_', listing_path.stem)
+        out_stem = "../data/amazon_products_" + re.sub(r'[^\w]', '_', listing_path.stem)
 
     # Allow output override
     out_file = Path(args.output) if args.output else Path(f"{out_stem}.json")

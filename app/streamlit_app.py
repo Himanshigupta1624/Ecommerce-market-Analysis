@@ -1,11 +1,10 @@
-# app/streamlit_app.py
 """
 Dynamic Amazon Market Analysis Dashboard
 Works for ANY product category.
-Includes AI-powered insights via Claude API.
+Includes AI-powered insights via Google Gemini API.
 
 Install:
-    pip install streamlit pandas plotly anthropic
+    pip install streamlit pandas plotly google-generativeai
 
 Run:
     streamlit run streamlit_app.py
@@ -20,6 +19,7 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 # PAGE CONFIG
@@ -78,10 +78,11 @@ def find_processed_files(data_dir: str = "../data/processed") -> dict[str, str]:
 # ─────────────────────────────────────────────────────────────────────────────
 
 def get_ai_insights(df: pd.DataFrame, question: str, api_key: str) -> str:
-    """Call Claude API with a summary of the data + user question."""
+    """Call Gemini API with a summary of the data + user question."""
     try:
-        import anthropic
-        client = anthropic.Anthropic(api_key=api_key)
+        from google import genai
+
+        client = genai.Client(api_key=api_key)
 
         # Build a compact data summary (don't send full dataset)
         summary = {
@@ -116,31 +117,41 @@ def get_ai_insights(df: pd.DataFrame, question: str, api_key: str) -> str:
             except Exception:
                 pass
 
-        system = (
+        system_prompt = (
             "You are an expert e-commerce market analyst specialising in Amazon India. "
             "You receive a structured JSON summary of scraped product data and answer "
             "the user's question with specific, data-backed insights. "
-            "Be concise, insightful, and use bullet points. "
+            "Be concise (max 200 words), insightful, and use bullet points. "
             "Format numbers with Indian rupee symbol ₹ and use commas for thousands."
         )
 
         user_msg = (
+            f"{system_prompt}\n\n"
             f"Here is the market data summary:\n```json\n{json.dumps(summary, indent=2)}\n```\n\n"
             f"Question: {question}"
         )
 
-        message = client.messages.create(
-            model="claude-sonnet-4-20250514",
-            max_tokens=1000,
-            system=system,
-            messages=[{"role": "user", "content": user_msg}],
-        )
-        return message.content[0].text
+        response = client.models.generate_content(
+        model="gemini-2.5-flash",
+        contents=user_msg
+)
+
+        return response.text
 
     except ImportError:
-        return "❌ `anthropic` package not installed. Run: `pip install anthropic`"
+        return "❌ `google-generativeai` package not installed. Run: `pip install google-generativeai`"
     except Exception as e:
-        return f"❌ AI error: {str(e)}"
+        error_str = str(e)
+        if "429" in error_str or "quota" in error_str.lower():
+            return (
+                "⏸️ **Free tier quota exceeded**\n\n"
+                "The free tier Gemini API has hit its daily limit. You can:\n"
+                "1. **Wait 24 hours** for the free tier to reset\n"
+                "2. **Upgrade to paid** at https://ai.google.dev/pricing\n"
+                "3. **Use cached results** from previous sessions\n\n"
+                "*Paid tier has much higher limits and better performance.*"
+            )
+        return f"❌ AI error: {error_str[:200]}"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -310,10 +321,10 @@ def main():
         # AI settings
         st.subheader("🤖 AI Insights")
         api_key = st.text_input(
-            "Anthropic API Key",
+            "Google Gemini API Key",
             type="password",
-            value=os.environ.get("ANTHROPIC_API_KEY", ""),
-            help="Get yours at console.anthropic.com",
+            value=os.environ.get("GOOGLE_API_KEY", ""),
+            help="Get yours at https://aistudio.google.com/app/apikey",
         )
 
     if not data_path or not Path(data_path).exists():
@@ -473,7 +484,7 @@ def main():
         st.subheader("🤖 AI-Powered Market Insights")
 
         if not api_key:
-            st.warning("Enter your Anthropic API key in the sidebar to enable AI insights.")
+            st.warning("Enter your Google Gemini API key in the sidebar to enable AI insights.")
         else:
             # Preset questions
             preset_questions = [

@@ -21,6 +21,7 @@ A comprehensive data pipeline for scraping, processing, and analyzing Amazon pro
 ```
 Ecommerce market Analysis/
 ├── README.md                          # This file
+├── requirements.txt                   # Python dependencies
 ├── scraper/                           # Web scraping modules
 │   ├── scraper_listing.py            # Scrapes search result listings
 │   ├── scraper_product.py            # Scrapes full product details
@@ -54,8 +55,8 @@ cd "e:\projects\Ecommerce market Analysis"
 python -m venv .venv
 .venv\Scripts\activate
 
-# Install dependencies
-pip install pandas crawl4ai streamlit plotly anthropic
+# Install dependencies from requirements.txt
+pip install -r requirements.txt
 ```
 
 ### 2. Scrape Amazon Data
@@ -396,7 +397,7 @@ python scraper_listing.py --query "your-query"
 
 **Solution**:
 ```bash
-pip install streamlit pandas plotly anthropic
+pip install -r requirements.txt
 ```
 
 ---
@@ -419,16 +420,27 @@ python powerbi_prep.py --query "your-query"
 
 ## 📋 Requirements
 
+All project dependencies are listed in `requirements.txt`.
+
+**Core packages:**
 - **Python 3.10+**
 - **pandas** — Data manipulation
 - **crawl4ai** — Web scraping with AI-powered extraction
 - **streamlit** — Interactive dashboard
 - **plotly** — Visualizations
 - **anthropic** — Claude API (optional, for AI insights)
+- **beautifulsoup4** — HTML parsing
+- **lxml** — XML/HTML processing
+- Plus 50+ supporting libraries (see [requirements.txt](requirements.txt) for complete list)
 
-Install all:
+**Install all dependencies:**
 ```bash
-pip install pandas crawl4ai streamlit plotly anthropic
+pip install -r requirements.txt
+```
+
+**Or install minimal core packages:**
+```bash
+pip install pandas crawl4ai streamlit plotly anthropic beautifulsoup4
 ```
 
 ---
@@ -445,6 +457,23 @@ If stopped/crashed:
 # Just re-run — it picks up where it left off
 python scraper_product.py --input amazon_listing_smartphones.json
 ```
+
+---
+
+## 📦 Generating requirements.txt
+
+To generate or update `requirements.txt` from your current environment:
+
+```bash
+# Freeze all installed packages
+pip freeze > requirements.txt
+
+# Or use pip-tools for better management
+pip install pip-tools
+pip-compile requirements.in  # if using requirements.in
+```
+
+The provided `requirements.txt` includes 60+ packages with pinned versions for reproducibility.
 
 ---
 

@@ -37,8 +37,7 @@ Ecommerce market Analysis/
 ├── powerbi_prep.py                   # Exports PowerBI tables
 ├── app/                               # Streamlit dashboard
 │   └── streamlit_app.py              # Interactive market analysis dashboard
-└── utils/                             # Helper utilities
-    └── helper.py
+
 ```
 
 ---

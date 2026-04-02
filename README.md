@@ -10,7 +10,7 @@ A comprehensive data pipeline for scraping, processing, and analyzing Amazon pro
 - **🔄 Dynamic Pipeline** — Auto-detects product categories and extracts category-specific features
 - **📊 PowerBI Export** — Flattened CSVs ready for business intelligence dashboards
 - **📈 Interactive Dashboard** — Streamlit app with 10+ visualizations and filtering
-- **🤖 AI Insights** — Claude API integration for natural language market analysis
+- **🤖 AI Insights** — Gemini API integration for natural language market analysis
 - **💾 Feature Engineering** — Automatic extraction of specs (RAM, storage, processor, battery, etc.)
 - **✅ Multi-Category Support** — Laptops, smartphones, headphones, TVs, refrigerators, washing machines, + generic fallback
 
